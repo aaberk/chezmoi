@@ -26,8 +26,9 @@ class ContConnexion {
                 $this->vue->message("❌ Ce login existe déjà.");
             } else {
                 $this->modele->ajouterUtilisateur($login, $mdp);
-                $this->vue->message("✅ Inscription réussie !");
-                echo '<a href="index.php?module=connexion&action=connexion">Se connecter</a>';
+                $_SESSION['login'] = $login;
+                $_SESSION['solde'] = $this->modele->getSolde($login);
+                header('Location: index.php');
             }
         } else {
             $this->vue->form_inscription();

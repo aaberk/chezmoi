@@ -38,9 +38,7 @@ public function ajouterUtilisateur($login, $password) {
         $req = self::$bdd->prepare("SELECT solde FROM utilisateur WHERE login = :login");
         $req->bindParam(':login', $login);
         $req->execute();
-        $resultat = $req->fetch()[0];
-        var_dump($resultat);
-        return $resultat;
+        return $req->fetch()[0];
     }
 }
 ?>
