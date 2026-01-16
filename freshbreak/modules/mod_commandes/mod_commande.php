@@ -10,44 +10,40 @@ class ModCommande {
     }
 
     public function exec() {
-        $action = isset($_GET['action']) ? $_GET['action'] : 'selection_client';
+        $action = isset($_GET['action']) ? $_GET['action'] : 'client';
 
         switch ($action) {
-            case 'selection_client':
-                $this->controleur->selectionClient();
+            case 'client':
+                $this->controleur->formSelectionClient();
                 break;
 
             case 'valider_client':
                 $this->controleur->validerClient();
                 break;
 
-            case 'produits':
-                $this->controleur->afficherProduits();
+            case 'panier':
+                $this->controleur->afficherPanier();
                 break;
 
-            case 'ajouter_panier':
-                $this->controleur->ajouterAuPanier();
+            case 'ajouter':
+                $this->controleur->ajouterProduit();
                 break;
 
-            case 'retirer_panier':
-                $this->controleur->retirerDuPanier();
+            case 'retirer':
+                $this->controleur->retirerProduit();
                 break;
 
-            case 'recapitulatif':
-                $this->controleur->recapitulatif();
-                break;
-
-            case 'valider_commande':
+            case 'valider':
                 $this->controleur->validerCommande();
                 break;
 
             case 'annuler':
-                $this->controleur->annulerCommande();
+                $this->controleur->annuler();
                 break;
 
             default:
                 echo "<p>Action inconnue.</p>";
-                $this->controleur->selectionClient();
+                $this->controleur->formSelectionClient();
                 break;
         }
     }

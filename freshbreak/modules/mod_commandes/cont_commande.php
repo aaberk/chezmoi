@@ -12,83 +12,40 @@ class ContCommande {
         $this->modele = new ModeleCommande();
     }
 
-    private function estBarman() {
-        if (!isset($_SESSION['login']) || !isset($_SESSION['bar_id'])) {
-            return false;
-        }
-        return $this->modele->verifierRoleBarman($_SESSION['login'], $_SESSION['bar_id']);
-    }
-
-    public function selectionClient() {
-        if (!$this->estBarman()) {
-            $this->vue->message("Accès refusé : vous devez être barman.");
-            return;
-        }
-
-        $clients = $this->modele->getClientsBuvette($_SESSION['bar_id']);
-        $this->vue->formSelectionClient($clients);
+    public function formSelectionClient() {
+        $clients = $this->modele->getClients($_SESSION['bar_id']);
+        $this->vue->formClient($clients);
     }
 
     public function validerClient() {
-        if (!$this->estBarman()) {
-            $this->vue->message("Accès refusé.");
-            return;
-        }
-
         if (isset($_POST['login_client'])) {
-            $_SESSION['commande_client'] = $_POST['login_client'];
+            $_SESSION['client_commande'] = $_POST['login_client'];
             $_SESSION['panier'] = [];
-            header('Location: index.php?module=commande&action=produits');
+            header('Location: index.php?module=commande&action=panier');
             exit;
-        } else {
-            $this->vue->message("❌ Aucun client sélectionné.");
-            $this->selectionClient();
         }
+        $this->vue->message("Aucun client sélectionné");
     }
 
-    public function afficherProduits() {
-        if (!$this->estBarman() || !isset($_SESSION['commande_client'])) {
-            $this->vue->message("Erreur : commande non initialisée.");
-            return;
-        }
-
-        $produits = $this->modele->getProduitsDispo($_SESSION['bar_id']);
+    public function afficherPanier() {
+        $produits = $this->modele->getProduits($_SESSION['bar_id']);
         $panier = $_SESSION['panier'] ?? [];
-        $total = $this->calculerTotal($panier);
-
-        $solde_client = $this->modele->getSoldeClient($_SESSION['commande_client']);
-
-        $this->vue->afficherProduits($produits, $panier, $total, $_SESSION['commande_client'], $solde_client);
+        $client = $_SESSION['client_commande'];
+        $solde = $this->modele->getSolde($client);
+        $this->vue->afficherPanier($produits, $panier, $client, $solde);
     }
 
-    public function ajouterAuPanier() {
-        if (!$this->estBarman() || !isset($_SESSION['commande_client'])) {
-            header('Location: index.php?module=commande');
-            exit;
-        }
-
+    public function ajouterProduit() {
         if (isset($_POST['id_produit']) && isset($_POST['quantite'])) {
-            $id_produit = intval($_POST['id_produit']);
-            $quantite = intval($_POST['quantite']);
+            $id = intval($_POST['id_produit']);
+            $qte = intval($_POST['quantite']);
 
-            if ($quantite <= 0) {
-                header('Location: index.php?module=commande&action=produits');
-                exit;
-            }
-
-            $stock = $this->modele->getStockProduit($id_produit, $_SESSION['bar_id']);
-            if ($quantite > $stock) {
-                $this->vue->message("❌ Stock insuffisant (disponible : $stock)");
-                $this->afficherProduits();
-                return;
-            }
-
-            $produit = $this->modele->getInfosProduit($id_produit);
+            $produit = $this->modele->getProduit($id);
 
             $existe = false;
-            foreach ($_SESSION['panier'] as &$item) {
-                if ($item['id_produit'] == $id_produit) {
-                    $item['quantite'] += $quantite;
+            foreach ($_SESSION['panier'] as &$p) {
+                if ($p['id'] == $id) {
+                    $p['qte'] += $qte;
                     $existe = true;
                     break;
                 }
@@ -96,105 +53,72 @@ class ContCommande {
 
             if (!$existe) {
                 $_SESSION['panier'][] = [
-                    'id_produit' => $id_produit,
+                    'id' => $id,
                     'nom' => $produit['nom_produit'],
                     'prix' => $produit['prix_vente'],
-                    'quantite' => $quantite
+                    'qte' => $qte
                 ];
             }
         }
-
-        header('Location: index.php?module=commande&action=produits');
+        header('Location: index.php?module=commande&action=panier');
         exit;
     }
 
-    public function retirerDuPanier() {
-        if (!$this->estBarman()) {
-            header('Location: index.php?module=commande');
-            exit;
-        }
-
-        if (isset($_GET['id_produit'])) {
-            $id_produit = intval($_GET['id_produit']);
-
-            foreach ($_SESSION['panier'] as $key => $item) {
-                if ($item['id_produit'] == $id_produit) {
+    public function retirerProduit() {
+        if (isset($_GET['id'])) {
+            $id = intval($_GET['id']);
+            foreach ($_SESSION['panier'] as $key => $p) {
+                if ($p['id'] == $id) {
                     unset($_SESSION['panier'][$key]);
-                    $_SESSION['panier'] = array_values($_SESSION['panier']); // Réindexer
                     break;
                 }
             }
+            $_SESSION['panier'] = array_values($_SESSION['panier']);
         }
-
-        header('Location: index.php?module=commande&action=produits');
+        header('Location: index.php?module=commande&action=panier');
         exit;
     }
 
-    public function recapitulatif() {
-        if (!$this->estBarman() || !isset($_SESSION['commande_client']) || empty($_SESSION['panier'])) {
-            $this->vue->message("Panier vide ou commande non initialisée.");
-            return;
-        }
-
-        $panier = $_SESSION['panier'];
-        $total = $this->calculerTotal($panier);
-        $client = $_SESSION['commande_client'];
-        $solde = $this->modele->getSoldeClient($client);
-
-        $this->vue->recapitulatif($client, $panier, $total, $solde);
-    }
-
     public function validerCommande() {
-        if (!$this->estBarman() || !isset($_SESSION['commande_client']) || empty($_SESSION['panier'])) {
-            $this->vue->message("❌ Impossible de valider la commande.");
+        if (empty($_SESSION['panier'])) {
+            $this->vue->message("Panier vide");
             return;
         }
 
-        $client = $_SESSION['commande_client'];
+        $client = $_SESSION['client_commande'];
         $panier = $_SESSION['panier'];
-        $total = $this->calculerTotal($panier);
 
-        $solde = $this->modele->getSoldeClient($client);
+        $total = 0;
+        foreach ($panier as $p) {
+            $total += $p['prix'] * $p['qte'];
+        }
+
+        $solde = $this->modele->getSolde($client);
         if ($solde < $total) {
-            $this->vue->message("❌ Solde insuffisant. Solde actuel : {$solde}€, Total : {$total}€");
-            $this->recapitulatif();
+            $this->vue->message("Solde insuffisant");
             return;
         }
 
         $id_commande = $this->modele->creerCommande($client, $_SESSION['bar_id']);
 
-        foreach ($panier as $item) {
-            $this->modele->ajouterProduitCommande(
-                $id_commande,
-                $item['id_produit'],
-                $item['quantite'],
-                $item['prix']
-            );
-
-            $this->modele->diminuerStock($item['id_produit'], $_SESSION['bar_id'], $item['quantite']);
+        foreach ($panier as $p) {
+            $this->modele->ajouterLigne($id_commande, $p['id'], $p['qte'], $p['prix']);
+            $this->modele->diminuerStock($p['id'], $_SESSION['bar_id'], $p['qte']);
         }
 
-        $this->modele->debiterClient($client, $total);
+        $this->modele->debiterSolde($client, $total);
 
-        unset($_SESSION['commande_client']);
+        unset($_SESSION['client_commande']);
         unset($_SESSION['panier']);
 
-        $this->vue->confirmation("Commande validée avec succès ! Total débité : {$total}€");
+        $this->vue->message("Commande validée");
     }
 
-    public function annulerCommande() {
-        unset($_SESSION['commande_client']);
+    public function annuler() {
+        unset($_SESSION['client_commande']);
         unset($_SESSION['panier']);
         header('Location: index.php?module=buvettes');
         exit;
-    }
-
-    private function calculerTotal($panier) {
-        $total = 0;
-        foreach ($panier as $item) {
-            $total += $item['prix'] * $item['quantite'];
-        }
-        return round($total, 2);
     }
 
     public function print_content() {

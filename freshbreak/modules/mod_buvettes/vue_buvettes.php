@@ -8,7 +8,7 @@ class VueBuvettes extends Vue_generique {
     }
 
     public function choice(){
-       echo '<a href="index.php?module=buvettes&action=liste">Buvettes</a>
+       echo '<a href="index.php?module=buvettes&action=liste">Choisir Bar</a>
 |
 <a href="index.php?module=creationBuvettes&action=ajout">Créer buvette</a>';
     }
@@ -40,8 +40,32 @@ class VueBuvettes extends Vue_generique {
         echo '</form>';
     }
 
-    public function menu() {
+    public function menu_client() {
         echo '<ul>
+            <li><a href="index.php?module=buvettes&action=payer">payer</a></li>
+        </ul>';
+    }
+    public function menu_gérant() {
+        echo '<ul>
+            <li><a href="index.php?module=commande&action=selection_client">Nouvelle commande</a></li>
+            <li><a href="index.php?module=buvettes&action=stock">stock</a></li>
+            <li><a href="index.php?module=buvettes&action=bilan">bilan</a></li>
+            <li><a href="index.php?module=buvettes&action=payer">payer</a></li>
+            <li><a href="index.php?module=gestion_profils&action=ajoututilisateur">ajout utilisateur</a></li>
+        </ul>';
+    }
+    public function menu_barman(){
+        echo '<ul>
+            <li><a href="index.php?module=commande&action=selection_client">Nouvelle commande</a></li>
+            <li><a href="index.php?module=buvettes&action=stock">stock</a></li>
+            <li><a href="index.php?module=buvettes&action=payer">payer</a></li>
+            
+        </ul>';
+    }
+
+    public function menu_admin(){
+        echo '<ul>
+            <li><a href="index.php?module=commande&action=selection_client">Nouvelle commande</a></li>
             <li><a href="index.php?module=stock&action=getStocks">stock</a></li>
             <li><a href="index.php?module=buvettes&action=bilan">bilan</a></li>
             <li><a href="index.php?module=buvettes&action=payer">payer</a></li>

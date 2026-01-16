@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>FreshBreak</title>
+        <link rel="stylesheet" href="template.css">
     </head>
 
     <body>

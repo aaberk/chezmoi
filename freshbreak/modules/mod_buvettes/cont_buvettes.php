@@ -13,11 +13,16 @@ class ContBuvettes {
 
     }
 
-    public function menu(){
-        $this->vue->menu();
-    }
-    public function liste(){
-        $this-> vue -> afficher_buvette($this->modele-> getListe());
+
+        public function menu($login)
+        {
+            $role =$this->modele->getRole($login);
+            $method = 'menu_' . $role;
+            $this->vue->$method();
+        }
+
+    public function liste($login){
+        $this-> vue -> afficher_buvette($this->modele-> getListe($login));
     }
     public function afficherStock(){}
 

@@ -28,7 +28,7 @@ class ModBuvettes {
                 break;
 
             case 'liste':
-                $this->controleur->liste();
+                $this->controleur->liste($_SESSION['login']);
                 break;
 
             case 'stock':
@@ -46,7 +46,7 @@ class ModBuvettes {
 
             case 'changer':
                 unset($_SESSION['bar_id']);
-                $this->controleur->liste();
+                $this->controleur->liste($_SESSION['login']);
                 return;
 
             default:
@@ -57,7 +57,7 @@ class ModBuvettes {
 
         // menu affiché uniquement si un bar est sélectionné
         if (isset($_SESSION['bar_id'])) {
-            $this->controleur->menu();
+            $this->controleur->menu($_SESSION['login'] ?? null);
         }
     }
 
