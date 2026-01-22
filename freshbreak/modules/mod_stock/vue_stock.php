@@ -27,6 +27,8 @@ class VueStock extends Vue_generique {
                 . "</li>";
         }
         echo "</ul>";
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">← Retour au menu</button></a></p>';
     }
 
     public function formReapprovisionnement(array $produits, $message, $prixTotal) {
@@ -64,6 +66,8 @@ class VueStock extends Vue_generique {
 
         echo '<p style="font-size:0.9em">Produit introuvable ?
                 <a href="index.php?module=produit&action=form_produit">Ajouter un produit</a></p>';
+
+        echo '<p><a href="index.php?module=stock&action=getStocks"><button type="button">← Retour au stock</button></a></p>';
     }
 
     public function message($texte) {

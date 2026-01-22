@@ -54,6 +54,8 @@ class Vue_inbox extends Vue_generique {
 
     public function display_supp() {
         echo '<a href="index.php?module=inbox&action=delete_all_notif">Supprimer toutes les notifications</a>';
+
+        echo '<br><br><p><a href="index.php?module=buvettes&action=liste"><button type="button">Retour au menu</button></a></p>';
     }
 }
 ?>

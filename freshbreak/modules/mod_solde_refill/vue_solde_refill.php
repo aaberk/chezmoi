@@ -16,6 +16,8 @@ class VueSoldeRefill extends Vue_generique {
             <input type="number" name="value" step="any" min="0.01"required><label>€</label><br>
             <button type="submit">Recharger</button>
         </form>';
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">← Retour</button></a></p>';
     }
 
     public function error() {

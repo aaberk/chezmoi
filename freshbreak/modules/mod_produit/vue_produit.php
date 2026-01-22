@@ -21,7 +21,7 @@ class Vue_produit extends Vue_generique {
 
         <label>Prix vente :</label>
         <input type="number" step="0.01" name="prix_vente" required><br>';
-        
+
         if (!isset($_SESSION['tmp_save_inventory'])) {
             echo '<label>Quantité initiale en stock :</label>
         <input type="number" name="quantite" min="0" value="0" required><br><br>';
@@ -55,6 +55,12 @@ class Vue_produit extends Vue_generique {
             echo "<li>{$p['nom_produit']} – {$p['prix_vente']} €</li>";
         }
         echo '</ul>';
+
+        if (isset($_SESSION['tmp_save_inventory'])) {
+            echo '<p><a href="index.php?module=inventaire_manuel&action=display_all_products"><button type="button">Retour à l\'inventaire</button></a></p>';
+        } else {
+            echo '<p><a href="index.php?module=stock&action=reapprovisionnement"><button type="button">Retour au réapprovisionnement</button></a></p>';
+        }
     }
 
     public function message($msg) {

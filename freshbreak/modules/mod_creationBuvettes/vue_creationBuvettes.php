@@ -19,12 +19,16 @@ class VueCreationBuvettes extends Vue_generique {
             <input type="file" name="doc1" required accept="application/pdf,.pdf"><br>
             <input type="file" name="doc2" required accept="application/pdf,.pdf"><br>
             <input type="file" name="doc3" required accept="application/pdf,.pdf"><br>
-            <button type="submit">S’inscrire</button>
+            <button type="submit">S\'inscrire</button>
         </form>';
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">Retour</button></a></p>';
     }
 
     public function message($message) {
         echo "<p>$message</p>";
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">← Retour</button></a></p>';
     }
 
     public function display_request($request_user,$bar_name,$request_id) {
@@ -36,6 +40,8 @@ class VueCreationBuvettes extends Vue_generique {
                       <a href="./dossiers_creation_bar/'.$request_user.'_request_'.$bar_name.'_doc3.pdf">Document 3</a><br>
                   <a href="index.php?module=creationBuvettes&action=accept_bar_creation&request_id='.$request_id.'">Accepter</a> 
                   <a href="index.php?module=creationBuvettes&action=decline_bar_creation&request_id='.$request_id.'">Refuser</a>';
+
+        echo '<br><br><p><a href="index.php?module=inbox&action=show_inbox"><button type="button">Retour à la messagerie</button></a></p>';
     }
 
     public function request_submit_failure_format() {

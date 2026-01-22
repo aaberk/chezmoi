@@ -27,11 +27,15 @@ class VueGestionProfils extends Vue_generique {
 
             <button type="submit">Ajouter</button>
         </form>';
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">Retour au menu</button></a></p>';
     }
 
 
     public function message($texte) {
         echo "<p>$texte</p>";
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">Retour au menu</button></a></p>';
     }
 }
 ?>

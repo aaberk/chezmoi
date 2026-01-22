@@ -11,6 +11,7 @@ class Vue_inventaire_manuel extends Vue_Generique {
     }
 
     public function show_products_inventory_form($products) {
+        echo '<h2>Inventaire manuel</h2>';
         echo '<form method="post" action="index.php?module=inventaire_manuel&action=submit_inventory">
                   <input type="hidden" name="csrf_token" value="' . htmlspecialchars($_SESSION['csrf_token']) . '">';
         foreach ($products as $product) {
@@ -22,6 +23,8 @@ class Vue_inventaire_manuel extends Vue_Generique {
         echo '    <button type="submit"> Valider l\'inventaire</button>
                   <p>Il manque un produit ? <button type="submit" formaction="index.php?module=inventaire_manuel&action=save_tmp_inventory">Ajoutez-le</button></p>
               </form>';
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">← Retour au menu</button></a></p>';
     }
 
     public function title_stock_analyse() {
@@ -30,6 +33,8 @@ class Vue_inventaire_manuel extends Vue_Generique {
 
     public function no_difference_stock_notice() {
         echo '<p>Il n\'y a aucun écart entre l\'inventaire et les stocks du bar.</p>';
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">Retour au menu</button></a></p>';
     }
 
     public function display_stock_differences($stock_differences) {
@@ -44,6 +49,8 @@ class Vue_inventaire_manuel extends Vue_Generique {
                       <p>'.abs($quantite).' de '.$info['nom_produit'].' '.$signe.' dans les stocks par rapport à l\'inventaire.</p>
                   </div>';
         }
+
+        echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">Retour au menu</button></a></p>';
     }
 }
 ?>
