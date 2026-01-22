@@ -120,3 +120,27 @@ footer {
     border-top: 2px solid #333;
     text-align: center;
 }
+
+.buvettes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.buvette-card {
+    background-color: #f0f0f0;
+    border: 1px solid #333;
+    padding: 15px 30px;
+    text-decoration: none;
+    color: #333;
+}
+
+.buvette-card:hover {
+    background-color: #ddd;
+}
+
+.buvette-card h3 {
+    margin: 0;
+    font-size: 16px;
+}

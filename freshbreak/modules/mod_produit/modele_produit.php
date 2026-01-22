@@ -104,4 +104,17 @@ class Modele_produit extends connexion {
         ]);
     }
 
+    public function enregistrerAchatProduit($idProduit, $idBar, $quantite) {
+        $req = self::$bdd->prepare("
+        INSERT INTO achat_produit
+        (id_produit, bar_associe, quantite, date_achat_produit)
+        VALUES (:p, :b, :q, CURDATE())
+    ");
+        $req->execute([
+            ':p' => $idProduit,
+            ':b' => $idBar,
+            ':q' => $quantite
+        ]);
+    }
+
 }

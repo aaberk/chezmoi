@@ -197,7 +197,7 @@ CREATE TABLE `utilisateur` (
 -- Index pour la table `achat_produit`
 --
 ALTER TABLE `achat_produit`
-  ADD PRIMARY KEY (`id_produit`,`bar_associe`),
+  ADD PRIMARY KEY (`id_produit`,`bar_associe`,`date_achat_produit`),
   ADD KEY `fk_achat_produit_bar` (`bar_associe`);
 
 --

@@ -64,6 +64,12 @@ class ContStock {
                         $quantite
                     );
 
+                    $this->modeleProduit->enregistrerAchatProduit(
+                        $idProduit,
+                        $barId,
+                        $quantite
+                    );
+
                     $prixTotal = $produit['prix_achat'] * $quantite;
                     $message = "Réapprovisionnement réussi";
                 } else {

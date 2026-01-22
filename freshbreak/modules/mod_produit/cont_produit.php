@@ -14,12 +14,14 @@ class Cont_produit {
 
     public function gestion_produit() {
 
+        $erreur = false;
+
         if (isset($_POST['nom_produit'])) {
 
             $nom = trim($_POST['nom_produit']);
-            $prixAchat = $_POST['prix_achat'];
-            $prixVente = $_POST['prix_vente'];
-            $quantite = (int)($_POST['quantite'] ?? 0);
+            $prixAchat = (float) $_POST['prix_achat'];
+            $prixVente = (float) $_POST['prix_vente'];
+            $quantite  = (int) ($_POST['quantite'] ?? 0);
 
             $fournisseurId = $_POST['fournisseur_id'] ?? null;
             $fNom   = trim($_POST['fournisseur_nom'] ?? '');
@@ -28,67 +30,78 @@ class Cont_produit {
 
             if ($nom === '') {
                 $this->vue->message("Nom du produit obligatoire.");
-                return;
+                $erreur = true;
             }
 
             if ($prixAchat <= 0 || $prixVente <= 0) {
-                $this->vue->message("Les prix doivent être positifs.");
-                return;
+                $this->vue->message("Les prix doivent être strictement positifs.");
+                $erreur = true;
             }
 
-            if ($quantite < 0) {
-                $this->vue->message("Quantité invalide.");
-                return;
+            if ($quantite <= 0) {
+                $this->vue->message("La quantité doit être strictement supérieure à 0.");
+                $erreur = true;
             }
 
-            if ($this->modele->produitExiste($nom)) {
+            if (!$erreur && $this->modele->produitExiste($nom)) {
                 $this->vue->message("Ce produit existe déjà.");
-                return;
+                $erreur = true;
             }
 
-            if (!empty($fournisseurId)) {
-                $idFournisseurFinal = $fournisseurId;
-            } else {
-                if ($fNom && $fEmail && $fTel) {
-                    $fournisseur = $this->modele->getFournisseurByInfos($fNom, $fEmail, $fTel);
-
-                    if ($fournisseur) {
-                        $idFournisseurFinal = $fournisseur['id_fournisseur'];
-                    } else {
-                        $idFournisseurFinal = $this->modele->ajouterFournisseur($fNom, $fEmail, $fTel);
-                    }
+            if (!$erreur) {
+                if (!empty($fournisseurId)) {
+                    $idFournisseurFinal = $fournisseurId;
                 } else {
-                    $this->vue->message("Veuillez sélectionner ou renseigner un fournisseur.");
-                    return;
+                    if ($fNom && $fEmail && $fTel) {
+                        $fournisseur = $this->modele->getFournisseurByInfos($fNom, $fEmail, $fTel);
+
+                        if ($fournisseur) {
+                            $idFournisseurFinal = $fournisseur['id_fournisseur'];
+                        } else {
+                            $idFournisseurFinal = $this->modele->ajouterFournisseur($fNom, $fEmail, $fTel);
+                        }
+                    } else {
+                        $this->vue->message("Veuillez sélectionner ou renseigner un fournisseur.");
+                        $erreur = true;
+                    }
                 }
             }
 
-            $idProduit = $this->modele->ajouterProduit(
-                $nom,
-                $prixAchat,
-                $prixVente,
-                $idFournisseurFinal
-            );
+            if (!$erreur) {
 
-            $idBar = $_SESSION['bar_id'] ?? null;
+                $idProduit = $this->modele->ajouterProduit(
+                    $nom,
+                    $prixAchat,
+                    $prixVente,
+                    $idFournisseurFinal
+                );
 
-            if ($idBar === null) {
-                $this->vue->message("Aucune buvette sélectionnée.");
-                return;
+                $idBar = $_SESSION['bar_id'] ?? null;
+
+                if ($idBar === null) {
+                    $this->vue->message("Aucune buvette sélectionnée.");
+                    $erreur = true;
+                } else {
+                    $this->modele->ajouterStock(
+                        $idBar,
+                        $idProduit,
+                        $quantite
+                    );
+
+                    $this->modele->enregistrerAchatProduit(
+                        $idProduit,
+                        $idBar,
+                        $quantite
+                    );
+
+                    if (isset($_SESSION['tmp_save_inventory'])) {
+                        $_SESSION['tmp_save_inventory'][$nom] = 0;
+                        header("Location: index.php?module=inventaire_manuel&action=display_all_products");
+                    }
+
+                    $this->vue->message("Produit ajouté avec succès.");
+                }
             }
-
-            $this->modele->ajouterStock(
-                $idBar,
-                $idProduit,
-                $quantite
-            );
-
-            if (isset($_SESSION['tmp_save_inventory'])) {
-                $_SESSION['tmp_save_inventory'][$nom] = 0;
-                header("Location: index.php?module=inventaire_manuel&action=display_all_products");
-            }
-
-            $this->vue->message("Produit ajouté.");
         }
 
         $fournisseurs = $this->modele->getFournisseurs();
