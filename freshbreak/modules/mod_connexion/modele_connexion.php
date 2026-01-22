@@ -40,6 +40,12 @@ public function ajouterUtilisateur($login, $password) {
         $req->execute();
         return $req->fetch()[0];
     }
+
+    public function getAdmin() {
+        $req = self::$bdd->prepare("SELECT login FROM admin;");
+        $req->execute();
+        return $req->fetch()[0];
+    }
 }
 ?>
 

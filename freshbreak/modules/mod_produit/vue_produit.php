@@ -12,7 +12,7 @@ class Vue_produit extends Vue_generique {
         echo '
     <h2>Ajout produit</h2>
     <form method="post" action="index.php?module=produit">
-
+        <input type="hidden" name="csrf_token" value="' . htmlspecialchars($_SESSION['csrf_token']) . '">
         <label>Nom produit :</label>
         <input type="text" name="nom_produit" required><br>
 
@@ -33,7 +33,7 @@ class Vue_produit extends Vue_generique {
     public function liste_produits($produits) {
         echo '<h2>Produits disponibles</h2><ul>';
         foreach ($produits as $p) {
-            echo "<li>{$p['nom']} – {$p['prix']} €</li>";
+            echo "<li>{$p['nom_produit']} – {$p['prix_vente']} €</li>";
         }
         echo '</ul>';
     }

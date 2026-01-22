@@ -10,7 +10,12 @@ class VueGestionProfils extends Vue_generique {
     public function form_ajout() {
         echo '
         <h2>Ajouter un membre à la buvette</h2>
+
         <form method="post" action="index.php?module=gestion_profils&action=ajouter">
+
+            <input type="hidden" name="csrf_token"
+                   value="' . htmlspecialchars($_SESSION['csrf_token']) . '">
+
             <label>Login de l\'utilisateur :</label>
             <input type="text" name="login" required><br>
 
@@ -23,6 +28,7 @@ class VueGestionProfils extends Vue_generique {
             <button type="submit">Ajouter</button>
         </form>';
     }
+
 
     public function message($texte) {
         echo "<p>$texte</p>";

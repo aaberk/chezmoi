@@ -27,8 +27,9 @@ class ModGestionProfils {
         }
     }
 
+
+
     public function print_content() {
         return $this->controleur->print_content();
     }
 }
-?>

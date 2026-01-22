@@ -6,7 +6,7 @@ class Vue_menu_nav {
 
     public function __construct() {
         if (isset($_SESSION['login']))
-            $this->affichage .= '<a href="index.php?module=buvettes">Buvettes</a>'.'|<a href="index.php?module=solde_refill&action=form">Recharger le solde</a>'.'|<a href="index.php?module=produit&action=form_produit">Ajouter un produit</a>';
+            $this->affichage .= '<a href="index.php?module=buvettes">Buvettes</a>'.'|<a href="index.php?module=solde_refill&action=form">Recharger le solde</a>';
         else
             $this->affichage = '';
     }

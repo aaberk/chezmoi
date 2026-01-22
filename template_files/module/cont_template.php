@@ -11,5 +11,9 @@ class Cont_template {
         $this->modele = new Modele_template();
         $this->vue = new Vue_template();
     }
+
+    public function print_content() {
+        return $this->vue->close_buffer();
+    }
 }
 ?>

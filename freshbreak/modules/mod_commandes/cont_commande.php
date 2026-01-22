@@ -36,6 +36,14 @@ class ContCommande {
     }
 
     public function ajouterProduit() {
+        if (
+            empty($_POST['csrf_token']) ||
+            empty($_SESSION['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
+
+            return;
+        }
         if (isset($_POST['id_produit']) && isset($_POST['quantite'])) {
             $id = intval($_POST['id_produit']);
             $qte = intval($_POST['quantite']);
@@ -65,6 +73,14 @@ class ContCommande {
     }
 
     public function retirerProduit() {
+        if (
+            empty($_POST['csrf_token']) ||
+            empty($_SESSION['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
+
+            return;
+        }
         if (isset($_GET['id'])) {
             $id = intval($_GET['id']);
             foreach ($_SESSION['panier'] as $key => $p) {

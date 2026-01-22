@@ -11,6 +11,7 @@ class ModeleGestionProfils extends connexion {
         return $req->fetchColumn() > 0;
     }
 
+
     public function estDejaMembreBuvette($login, $bar_id) {
         $req = self::$bdd->prepare("SELECT COUNT(*) FROM role WHERE login_utilisateur = :login AND bar_associe = :bar_id");
         $req->bindParam(':login', $login);

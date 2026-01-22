@@ -6,7 +6,7 @@ class Vue_connexion_info {
 
     public function __construct() {
         if (isset($_SESSION['login']))
-            $this->affichage .= '<p>Connecté sous <b>' . htmlspecialchars($_SESSION['login']) . '</b> | Solde : ' . $_SESSION['solde'] . '€ | <a href="index.php?module=connexion&action=deconnexion">Se déconnecter</a></p>';
+            $this->affichage .= '<p>Connecté sous <b>' . htmlspecialchars($_SESSION['login']) . '</b> | Solde : ' . $_SESSION['solde'] . '€ | ' . '<a href=index.php?module=inbox&action=show_inbox>Boite de réception</a> | ' . '<a href="index.php?module=connexion&action=deconnexion">Se déconnecter</a></p>';
         else
             $this->affichage = '';
     }

@@ -11,6 +11,8 @@ class VueConnexion extends Vue_generique {
         echo '
         <h2>Inscription</h2>
         <form method="post" action="index.php?module=connexion&action=inscription">
+         <input type="hidden" name="csrf_token"
+                   value="' . htmlspecialchars($_SESSION['csrf_token']) . '">
             <label>Login :</label>
             <input type="text" name="login" required><br>
             <label>Mot de passe :</label>
@@ -25,6 +27,8 @@ class VueConnexion extends Vue_generique {
         echo '
         <h2>Connexion</h2>
         <form method="post" action="index.php?module=connexion&action=connexion">
+         <input type="hidden" name="csrf_token"
+                   value="' . htmlspecialchars($_SESSION['csrf_token']) . '">
             <label>Login :</label>
             <input type="text" name="login" required><br>
             <label>Mot de passe :</label>

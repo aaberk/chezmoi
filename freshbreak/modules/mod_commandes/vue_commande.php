@@ -15,6 +15,8 @@ class VueCommande extends Vue_generique {
 
         echo '<h2>Nouvelle commande</h2>
         <form method="post" action="index.php?module=commande&action=valider_client">
+         <input type="hidden" name="csrf_token"
+                   value="' . htmlspecialchars($_SESSION['csrf_token']) . '">
             <label>Client :</label><br>
             <select name="login_client" required>
                 <option value="">-- Choisir --</option>';
@@ -55,6 +57,8 @@ class VueCommande extends Vue_generique {
             foreach ($produits as $p) {
                 echo '<li>' . $p['nom_produit'] . ' - ' . $p['prix_vente'] . '€ (Stock : ' . $p['quantite'] . ')
                 <form method="post" action="index.php?module=commande&action=ajouter" style="display:inline;">
+                 <input type="hidden" name="csrf_token"
+                   value="' . htmlspecialchars($_SESSION['csrf_token']) . '">
                     <input type="hidden" name="id_produit" value="' . $p['id_produit'] . '">
                     <input type="number" name="quantite" value="1" min="1" max="' . $p['quantite'] . '" style="width:50px;">
                     <button type="submit">Ajouter</button>

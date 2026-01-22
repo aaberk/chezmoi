@@ -21,24 +21,27 @@ class ContGestionProfils {
     }
 
     public function ajouterMembre() {
-        if (!isset($_POST['login']) || !isset($_POST['role'])) {
+        if (
+            empty($_POST['csrf_token']) ||
+            empty($_SESSION['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
+
+            return;
+        }
+
+        if (empty($_POST['login']) || empty($_POST['role'])) {
             $this->vue->message("Données manquantes.");
             $this->vue->form_ajout();
             return;
         }
 
         $login = trim($_POST['login']);
-        $role = trim($_POST['role']);
-        $bar_id = isset($_SESSION['bar_id']) ? $_SESSION['bar_id'] : null;
+        $role  = trim($_POST['role']);
+        $bar_id = $_SESSION['bar_id'] ?? null;
 
         if (!$bar_id) {
             $this->vue->message("Aucune buvette sélectionnée.");
-            return;
-        }
-
-        if (!$this->modele->utilisateurExiste($login)) {
-            $this->vue->message("L'utilisateur '$login' n'existe pas.");
-            $this->vue->form_ajout();
             return;
         }
 
@@ -48,13 +51,15 @@ class ContGestionProfils {
             return;
         }
 
-        $this->modele->ajouterMembreBuvette($login, $bar_id, $role);
-        $this->vue->message("L'utilisateur a été ajouté avec le rôle '$role'.");
-        echo '<a href="index.php?module=gestion_profils&action=form">Ajouter un autre membre</a>';
+
+        $this->modele->ajouterMembreBuvette($login, $bar_id,$role);
+
+        unset($_SESSION['csrf_token']); // token à usage unique
+
+        $this->vue->message("Membre ajouté avec succès.");
     }
 
     public function print_content() {
         return $this->vue->close_buffer();
     }
 }
-?>

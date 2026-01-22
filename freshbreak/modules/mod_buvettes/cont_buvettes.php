@@ -9,13 +9,9 @@ class ContBuvettes {
     public function __construct() {
         $this->vue = new VueBuvettes();
         $this->modele = new ModeleBuvette();
-
-
     }
 
-
-        public function menu($login)
-        {
+        public function menu($login) {
             $role =$this->modele->getRole($login);
             $method = 'menu_' . $role;
             $this->vue->$method();

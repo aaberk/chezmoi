@@ -57,7 +57,7 @@ class ModBuvettes {
 
         // menu affiché uniquement si un bar est sélectionné
         if (isset($_SESSION['bar_id'])) {
-            $this->controleur->menu($_SESSION['login'] ?? null);
+            $this->controleur->menu($_SESSION['login']);
         }
     }
 

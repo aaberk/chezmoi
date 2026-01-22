@@ -10,7 +10,7 @@ class VueBuvettes extends Vue_generique {
     public function choice(){
        echo '<a href="index.php?module=buvettes&action=liste">Choisir Bar</a>
 |
-<a href="index.php?module=creationBuvettes&action=ajout">Créer buvette</a>';
+<a href="index.php?module=creationBuvettes&action=show_form">Créer buvette</a>';
     }
     public function afficher_buvette(array $tab) {
 
@@ -20,6 +20,8 @@ class VueBuvettes extends Vue_generique {
         }
 
         echo '<form method="get" action="index.php">';
+        echo '<input type="hidden" name="csrf_token"
+                   value="' . htmlspecialchars($_SESSION['csrf_token']) . '">';
         echo '<input type="hidden" name="module" value="buvettes">';
         echo '<input type="hidden" name="action" value="liste">';
 
@@ -47,8 +49,9 @@ class VueBuvettes extends Vue_generique {
     }
     public function menu_gérant() {
         echo '<ul>
+            <li><a href="index.php?module=produit&action=form_produit">Ajouter un produit</a></li>
             <li><a href="index.php?module=commande&action=selection_client">Nouvelle commande</a></li>
-            <li><a href="index.php?module=buvettes&action=stock">stock</a></li>
+            <li><a href="index.php?module=stock&action=getStocks">stock</a></li>
             <li><a href="index.php?module=buvettes&action=bilan">bilan</a></li>
             <li><a href="index.php?module=buvettes&action=payer">payer</a></li>
             <li><a href="index.php?module=gestion_profils&action=ajoututilisateur">ajout utilisateur</a></li>
@@ -57,7 +60,7 @@ class VueBuvettes extends Vue_generique {
     public function menu_barman(){
         echo '<ul>
             <li><a href="index.php?module=commande&action=selection_client">Nouvelle commande</a></li>
-            <li><a href="index.php?module=buvettes&action=stock">stock</a></li>
+            <li><a href="index.php?module=stock&action=getStocks">stock</a></li>
             <li><a href="index.php?module=buvettes&action=payer">payer</a></li>
             
         </ul>';
