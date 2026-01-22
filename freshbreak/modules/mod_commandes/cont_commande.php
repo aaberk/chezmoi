@@ -18,8 +18,23 @@ class ContCommande {
     }
 
     public function validerClient() {
-        if (isset($_POST['login_client'])) {
-            $_SESSION['client_commande'] = $_POST['login_client'];
+        if (
+            empty($_POST['csrf_token']) ||
+            empty($_SESSION['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
+
+            return;
+        }
+        if (isset($_POST['mdp'])) {
+            foreach ($this->modele->get_users() as $user) {
+                if (password_verify($_POST['mdp'],$user['password'])) {
+                    $_SESSION['client_commande'] = $user['login'];
+                }
+            }
+            if (isset($_SESSION['client_commande'])) {
+                $this->vue->notice_non_exisant_mdp();
+            }
             $_SESSION['panier'] = [];
             header('Location: index.php?module=commande&action=panier');
             exit;
@@ -73,14 +88,6 @@ class ContCommande {
     }
 
     public function retirerProduit() {
-        if (
-            empty($_POST['csrf_token']) ||
-            empty($_SESSION['csrf_token']) ||
-            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
-        ) {
-
-            return;
-        }
         if (isset($_GET['id'])) {
             $id = intval($_GET['id']);
             foreach ($_SESSION['panier'] as $key => $p) {

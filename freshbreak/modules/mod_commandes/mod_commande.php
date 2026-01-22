@@ -40,11 +40,6 @@ class ModCommande {
             case 'annuler':
                 $this->controleur->annuler();
                 break;
-
-            default:
-                echo "<p>Action inconnue.</p>";
-                $this->controleur->formSelectionClient();
-                break;
         }
     }
 

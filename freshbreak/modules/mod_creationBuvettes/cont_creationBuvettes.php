@@ -18,16 +18,16 @@ class ContCreationBuvettes {
             empty($_SESSION['csrf_token']) ||
             !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
         ) {
-
+            //$this->vue->message("Erreur de sécurité.");
             return;
         }
         $nom = trim($_POST['nom']);
         if ($nom == '') {
-            $this->vue->message("❌ Le nom de la buvette est obligatoire.");
+            $this->vue->message("Le nom de la buvette est obligatoire.");
             return;
         }
         if ($this->modele->nomexist($nom)) {
-            $this->vue->message("❌ Cette buvette existe déjà.");
+            $this->vue->message("Cette buvette existe déjà.");
             return;
         }
         if ($this->modele->check_request_exists($nom)) {
@@ -38,11 +38,17 @@ class ContCreationBuvettes {
         $file_name2 = $this->generate_file_name($nom,'doc2');
         $file_name3 = $this->generate_file_name($nom,'doc3');
 
-        if (!$this->check_files()) {
-    //        move_uploaded_file($_FILES['doc1']['tmp_name'],'./dossiers_creation_bar/' . $file_name1);
-    //        move_uploaded_file($_FILES['doc2']['tmp_name'],'./dossiers_creation_bar/' . $file_name2);
-    //        move_uploaded_file($_FILES['doc3']['tmp_name'],'./dossiers_creation_bar/' . $file_name3);
-            $this->create_request_message_to_inbox($this->modele->new_request($_SESSION['login'], $nom));
+//        if (!$this->check_files()) {
+//    //        move_uploaded_file($_FILES['doc1']['tmp_name'],'./dossiers_creation_bar/' . $file_name1);
+//    //        move_uploaded_file($_FILES['doc2']['tmp_name'],'./dossiers_creation_bar/' . $file_name2);
+//    //        move_uploaded_file($_FILES['doc3']['tmp_name'],'./dossiers_creation_bar/' . $file_name3);
+//            $this->create_request_message_to_inbox($this->modele->new_request($_SESSION['login'], $nom));
+//            $this->vue->send_notice();
+//        }
+        if ($this->check_files()) {
+            $this->create_request_message_to_inbox(
+                $this->modele->new_request($_SESSION['login'], $nom)
+            );
             $this->vue->send_notice();
         }
         else {
@@ -51,7 +57,23 @@ class ContCreationBuvettes {
     }
 
     public function check_files(): bool {
-        return mime_content_type($_FILES['doc1']['tmp_name']) == "application/pdf" && mime_content_type($_FILES['doc2']['tmp_name']) == "application/pdf" && mime_content_type($_FILES['doc3']['tmp_name']) == "application/pdf";
+        $docs = ['doc1', 'doc2', 'doc3'];
+
+        foreach ($docs as $doc) {
+            if (
+                !isset($_FILES[$doc]) ||
+                $_FILES[$doc]['error'] !== UPLOAD_ERR_OK
+            ) {
+                return false;
+            }
+
+            $mime = mime_content_type($_FILES[$doc]['tmp_name']);
+            if (!in_array($mime, ['application/pdf', 'application/x-pdf'])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function generate_file_name($bar_name, $doc): string {

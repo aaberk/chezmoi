@@ -45,6 +45,12 @@ class ContGestionProfils {
             return;
         }
 
+        if (!$this->modele->utilisateurExiste($login)) {
+            $this->vue->message("Cet utilisateur n'existe pas.");
+            $this->vue->form_ajout();
+            return;
+        }
+
         if ($this->modele->estDejaMembreBuvette($login, $bar_id)) {
             $this->vue->message("Cet utilisateur est déjà membre de cette buvette.");
             $this->vue->form_ajout();

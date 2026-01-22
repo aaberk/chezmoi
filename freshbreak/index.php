@@ -16,6 +16,8 @@
 
 
     $module = isset($_GET['module']) ? $_GET['module'] : 'connexion';
+    if (!isset($_SESSION['login']))
+        $module = 'connexion';
 
     switch ($module) {
         case 'creationBuvettes':
@@ -38,30 +40,35 @@
             $mod->exec();
             $template_content = $mod->print_content();
             break;
+
         case 'buvettes':
             require_once('modules/mod_buvettes/mod_buvettes.php');
             $mod = new ModBuvettes();
             $mod->exec();
             $template_content = $mod->print_content();
             break;
+
         case 'stock':
             require_once('modules/mod_stock/mod_stock.php');
             $mod = new ModStock();
             $mod->exec();
             $template_content = $mod->print_content();
             break;
+
         case 'gestion_profils':
             require_once('modules/mod_gestion_profils/mod_gestion_profils.php');
             $mod = new ModGestionProfils();
             $mod->exec();
             $template_content = $mod->print_content();
             break;
+
         case 'inbox':
             require_once('modules/mod_inbox/mod_inbox.php');
             $mod = new Mod_inbox();
             $mod->exec();
             $template_content = $mod->print_content();
             break;
+
         case 'produit':
             require_once('modules/mod_produit/mod_produit.php');
             $mod = new Modproduit();
@@ -76,6 +83,12 @@
             $template_content = $mod->print_content();
             break;
 
+        case 'inventaire_manuel':
+            require_once ('modules/mod_inventaire_manuel/mod_inventaire_manuel.php');
+            $mod = new Mod_inventaire_manuel();
+            $mod->exec();
+            $template_content = $mod->print_content();
+            break;
     }
 
     $connexion_info = new Comp_connexion_info();

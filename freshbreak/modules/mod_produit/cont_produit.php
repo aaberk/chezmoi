@@ -19,7 +19,12 @@ class Cont_produit {
             $nom = trim($_POST['nom_produit']);
             $prixAchat = $_POST['prix_achat'];
             $prixVente = $_POST['prix_vente'];
-            $fournisseur = $_POST['fournisseur'];
+            $quantite = (int)($_POST['quantite'] ?? 0);
+
+            $fournisseurId = $_POST['fournisseur_id'] ?? null;
+            $fNom   = trim($_POST['fournisseur_nom'] ?? '');
+            $fEmail = trim($_POST['fournisseur_email'] ?? '');
+            $fTel   = trim($_POST['fournisseur_tel'] ?? '');
 
             if ($nom === '') {
                 $this->vue->message("Nom du produit obligatoire.");
@@ -31,23 +36,65 @@ class Cont_produit {
                 return;
             }
 
+            if ($quantite < 0) {
+                $this->vue->message("Quantité invalide.");
+                return;
+            }
+
             if ($this->modele->produitExiste($nom)) {
                 $this->vue->message("Ce produit existe déjà.");
                 return;
             }
 
-            $this->modele->ajouterProduit(
+            if (!empty($fournisseurId)) {
+                $idFournisseurFinal = $fournisseurId;
+            } else {
+                if ($fNom && $fEmail && $fTel) {
+                    $fournisseur = $this->modele->getFournisseurByInfos($fNom, $fEmail, $fTel);
+
+                    if ($fournisseur) {
+                        $idFournisseurFinal = $fournisseur['id_fournisseur'];
+                    } else {
+                        $idFournisseurFinal = $this->modele->ajouterFournisseur($fNom, $fEmail, $fTel);
+                    }
+                } else {
+                    $this->vue->message("Veuillez sélectionner ou renseigner un fournisseur.");
+                    return;
+                }
+            }
+
+            $idProduit = $this->modele->ajouterProduit(
                 $nom,
                 $prixAchat,
                 $prixVente,
-                $fournisseur
+                $idFournisseurFinal
             );
+
+            $idBar = $_SESSION['bar_id'] ?? null;
+
+            if ($idBar === null) {
+                $this->vue->message("Aucune buvette sélectionnée.");
+                return;
+            }
+
+            $this->modele->ajouterStock(
+                $idBar,
+                $idProduit,
+                $quantite
+            );
+
+            if (isset($_SESSION['tmp_save_inventory'])) {
+                $_SESSION['tmp_save_inventory'][$nom] = 0;
+                header("Location: index.php?module=inventaire_manuel&action=display_all_products");
+            }
 
             $this->vue->message("Produit ajouté.");
         }
 
+        $fournisseurs = $this->modele->getFournisseurs();
         $produits = $this->modele->getProduits();
-        $this->vue->form_produit();
+
+        $this->vue->form_produit($fournisseurs);
         $this->vue->liste_produits($produits);
     }
 

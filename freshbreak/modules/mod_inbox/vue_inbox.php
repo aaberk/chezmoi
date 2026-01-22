@@ -15,7 +15,7 @@ class Vue_inbox extends Vue_generique {
         $request_arguments = explode("|",$request_info);
         if ($request_arguments[0] == '1') {
             $decision = 'accepté';
-            $explanation = 'Vous pourrez retrouver votre bar'.$request_arguments[1].' dans le menu déroulant de sélection.';
+            $explanation = 'Vous pourrez retrouver votre bar "'.$request_arguments[1].'" dans le menu déroulant de sélection.';
         }
         else {
             $decision = 'refusé';

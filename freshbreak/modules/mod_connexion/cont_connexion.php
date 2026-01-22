@@ -13,33 +13,42 @@ class ContConnexion {
     }
 
     public function form_inscription() {
-        if (
-            empty($_POST['csrf_token']) ||
-            empty($_SESSION['csrf_token']) ||
-            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
-        ) {
-
-            return;
-        }
 
         if (isset($_SESSION['login'])) {
             $this->vue->deja_connecte($_SESSION['login']);
-        } elseif (!empty($_POST['login']) && !empty($_POST['mdp'])) {
-            $login = $_POST['login'];
-            $mdp = $_POST['mdp'];
-
-            if ($this->modele->loginExiste($login)) {
-                $this->vue->message(" Ce login existe déjà.");
-            } else {
-                $this->modele->ajouterUtilisateur($login, $mdp);
-                $_SESSION['login'] = $login;
-                $_SESSION['solde'] = $this->modele->getSolde($login);
-                $_SESSION['admin'] = false;
-                header('Location: index.php');
-            }
-        } else {
-            $this->vue->form_inscription();
+            return;
         }
+
+        if (!empty($_POST)) {
+
+            if (
+                empty($_POST['csrf_token']) ||
+                empty($_SESSION['csrf_token']) ||
+                !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+            ) {
+                //$this->vue->message("Erreur de sécurité.");
+                return;
+            }
+
+            if (!empty($_POST['login']) && !empty($_POST['mdp'])) {
+                $login = $_POST['login'];
+                $mdp = $_POST['mdp'];
+
+                if ($this->modele->loginExiste($login)) {
+                    $this->vue->message("Ce login existe déjà.");
+                } else {
+                    $this->modele->ajouterUtilisateur($login, $mdp);
+                    $_SESSION['login'] = $login;
+                    $_SESSION['solde'] = $this->modele->getSolde($login);
+                    $_SESSION['admin'] = false;
+                    unset($_SESSION['bar_id']);
+                    header('Location: index.php?module=buvettes&action=liste');
+                    exit;
+                }
+            }
+        }
+
+        $this->vue->form_inscription();
     }
 
 
@@ -55,7 +64,9 @@ class ContConnexion {
                     $_SESSION['admin'] = true;
                 else
                     $_SESSION['admin'] = false;
-                header('Location: index.php');
+                unset($_SESSION['bar_id']); // sécurité
+                header('Location: index.php?module=buvettes&action=liste');
+                exit;
             } else {
                 $this->vue->message(" Identifiant ou mot de passe incorrect.");
                 $this->vue->form_connexion();

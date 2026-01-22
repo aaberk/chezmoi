@@ -24,16 +24,47 @@ class ModeleBuvette extends connexion
 
         return $stmt->fetchAll();
     }
-    public function getRole($login_utilisateur){
+
+    public function getAllBars() {
+        $sql = 'SELECT * FROM bar ORDER BY nom';
+        $stmt = self::$bdd->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    public function getRoleParBar($login_utilisateur, $barId){
         $sql = 'SELECT role_bar 
         FROM role 
-        WHERE login_utilisateur = :login_utilisateur';
+        WHERE login_utilisateur = :login_utilisateur
+        AND bar_associe = :bar';
 
         $stmt = self::$bdd->prepare($sql);
-        $stmt->bindValue(':login_utilisateur', $login_utilisateur);
-        $stmt->execute();
+        $stmt->execute([
+            ':login_utilisateur' => $login_utilisateur,
+            ':bar' => $barId
+        ]);
+
 
         return $stmt->fetchColumn();
+    }
+
+    public function getNomBarById(int $barId) {
+        $sql = 'SELECT nom FROM bar WHERE id_bar = :id';
+        $stmt = self::$bdd->prepare($sql);
+        $stmt->execute([':id' => $barId]);
+        return $stmt->fetchColumn();
+    }
+
+    public function getProduitsDisponibles($bar_id) {
+        $sql = 'SELECT p.nom_produit, p.prix_vente
+                FROM produit p
+                JOIN disponibilite d ON p.id_produit = d.id_produit
+                WHERE d.bar_associe = :bar_id AND d.quantite > 0
+                ORDER BY p.nom_produit';
+
+        $stmt = self::$bdd->prepare($sql);
+        $stmt->bindValue(':bar_id', $bar_id);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 
 }

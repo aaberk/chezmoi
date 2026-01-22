@@ -21,7 +21,7 @@ class ContSoldeRefill {
             $refillement = $_POST['value'];
             $this->modele->addMoney($_SESSION['login'],$refillement);
             $_SESSION['solde'] += $refillement;
-            header('Location: index.php');
+            header('Location: index.php?module=buvettes&action=liste');
         }
         else {
             $this->form();

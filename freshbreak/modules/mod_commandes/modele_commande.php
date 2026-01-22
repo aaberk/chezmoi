@@ -19,7 +19,7 @@ class ModeleCommande extends connexion {
         $req = self::$bdd->prepare("
             SELECT p.id_produit, p.nom_produit, p.prix_vente, s.quantite
             FROM produit p
-            JOIN stock s ON p.id_produit = s.id_produit
+            JOIN disponibilite s ON p.id_produit = s.id_produit
             WHERE s.bar_associe = :bar_id AND s.quantite > 0
         ");
         $req->bindParam(':bar_id', $bar_id);
@@ -75,13 +75,19 @@ class ModeleCommande extends connexion {
 
     public function diminuerStock($id_produit, $bar_id, $quantite) {
         $req = self::$bdd->prepare("
-            UPDATE stock SET quantite = quantite - :quantite
+            UPDATE disponibilite SET quantite = quantite - :quantite
             WHERE id_produit = :id_produit AND bar_associe = :bar_id
         ");
         $req->bindParam(':id_produit', $id_produit);
         $req->bindParam(':bar_id', $bar_id);
         $req->bindParam(':quantite', $quantite);
         $req->execute();
+    }
+
+    public function get_users() {
+        $req = self::$bdd->prepare("SELECT login,password FROM utilisateur;");
+        $req->execute();
+        return $req->fetchAll();
     }
 }
 ?>

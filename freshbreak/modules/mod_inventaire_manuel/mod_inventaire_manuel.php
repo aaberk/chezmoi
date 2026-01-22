@@ -1,8 +1,8 @@
 <?php
 if (!defined('APP_SECURE')) die('Accès interdit.');
-require_once('cont_template.php');
+require_once('cont_inventaire_manuel.php');
 
-class Mod_template {
+class Mod_inventaire_manuel {
     private $controller;
 
     public function __construct() {
@@ -10,9 +10,18 @@ class Mod_template {
     }
 
     public function exec() {
-        $action = isset($_GET['action']) ? $_GET['action'] : '[default]';
+        $action = $_GET['action'] ?? 'display_all_products';
         switch ($action) {
-            case '[case]':
+            case 'display_all_products':
+                $this->controller->show_products();
+                break;
+
+            case 'submit_inventory':
+                $this->controller->submit_request();
+                break;
+
+            case 'save_tmp_inventory':
+                $this->controller->save_temp_inventory();
                 break;
 
             default:

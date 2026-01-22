@@ -12,21 +12,14 @@ class VueCommande extends Vue_generique {
             echo '<p>Aucun client disponible.</p>';
             return;
         }
-
-        echo '<h2>Nouvelle commande</h2>
+        echo '
+        <h2>Identification du client</h2>
         <form method="post" action="index.php?module=commande&action=valider_client">
          <input type="hidden" name="csrf_token"
                    value="' . htmlspecialchars($_SESSION['csrf_token']) . '">
-            <label>Client :</label><br>
-            <select name="login_client" required>
-                <option value="">-- Choisir --</option>';
-
-        foreach ($clients as $c) {
-            echo '<option value="' . $c['login'] . '">' . $c['login'] . ' (' . $c['solde'] . '€)</option>';
-        }
-
-        echo '</select><br><br>
-            <button type="submit">Continuer</button>
+            <label>Mot de passe :</label>
+            <input type="password" name="mdp" required><br>
+            <button type="submit">Suivant</button>
         </form>';
     }
 
@@ -68,6 +61,10 @@ class VueCommande extends Vue_generique {
         }
 
         echo '<br><a href="index.php?module=commande&action=annuler"><button>Annuler</button></a>';
+    }
+
+    public function notice_non_exisant_mdp() {
+        echo '<p>Le mot de passe saisi n\'existe ou ne correspond à aucun utilisateur. Veuillez <a href="index.php?module=commande&action=client">réessayer.</a> </p>';
     }
 
     public function message($texte) {
