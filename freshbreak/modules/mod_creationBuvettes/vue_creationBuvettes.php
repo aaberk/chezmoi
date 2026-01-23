@@ -26,20 +26,20 @@ class VueCreationBuvettes extends Vue_generique {
     }
 
     public function message($message) {
-        echo "<p>$message</p>";
+        echo "<p>" . htmlspecialchars($message) . "</p>";
 
         echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">← Retour</button></a></p>';
     }
 
-    public function display_request($request_user,$bar_name,$request_id) {
+    public function display_request($request_user, $bar_name, $request_id) {
         echo '<h2>Requête de création de bar</h2>
-                  <p>'.$request_user.' souhaite créer le bar '.$bar_name.'.</p>
+                  <p>' . htmlspecialchars($request_user) . ' souhaite créer le bar ' . htmlspecialchars($bar_name) . '.</p>
                   <h3>Pièces justificatives :</h3>
-                      <a href="./dossiers_creation_bar/'.$request_user.'_request_'.$bar_name.'_doc1.pdf">Document 1</a><br>
-                      <a href="./dossiers_creation_bar/'.$request_user.'_request_'.$bar_name.'_doc2.pdf">Document 2</a><br>
-                      <a href="./dossiers_creation_bar/'.$request_user.'_request_'.$bar_name.'_doc3.pdf">Document 3</a><br>
-                  <a href="index.php?module=creationBuvettes&action=accept_bar_creation&request_id='.$request_id.'">Accepter</a> 
-                  <a href="index.php?module=creationBuvettes&action=decline_bar_creation&request_id='.$request_id.'">Refuser</a>';
+                      <a href="./dossiers_creation_bar/' . htmlspecialchars($request_user) . '_request_' . htmlspecialchars($bar_name) . '_doc1.pdf">Document 1</a><br>
+                      <a href="./dossiers_creation_bar/' . htmlspecialchars($request_user) . '_request_' . htmlspecialchars($bar_name) . '_doc2.pdf">Document 2</a><br>
+                      <a href="./dossiers_creation_bar/' . htmlspecialchars($request_user) . '_request_' . htmlspecialchars($bar_name) . '_doc3.pdf">Document 3</a><br>
+                  <a href="index.php?module=creationBuvettes&action=accept_bar_creation&request_id=' . htmlspecialchars($request_id) . '">Accepter</a> 
+                  <a href="index.php?module=creationBuvettes&action=decline_bar_creation&request_id=' . htmlspecialchars($request_id) . '">Refuser</a>';
 
         echo '<br><br><p><a href="index.php?module=inbox&action=show_inbox"><button type="button">Retour à la messagerie</button></a></p>';
     }
@@ -59,3 +59,4 @@ class VueCreationBuvettes extends Vue_generique {
                 <a href="index.php?module=buvettes">Retour</a>';
     }
 }
+?>

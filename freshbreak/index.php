@@ -20,6 +20,8 @@
         $module = 'connexion';
 
     switch ($module) {
+
+
         case 'creationBuvettes':
             require_once('modules/mod_creationBuvettes/mod_creationBuvettes.php');
             $mod = new ModCreationBuvettes();
@@ -75,6 +77,12 @@
             $mod->exec();
             $template_content = $mod->print_content();
             break;
+        case 'rejoindreBuvette':
+            require_once('modules/mod_adhesion/mod_adhesion.php');
+            $mod = new ModAdhesion();
+            $mod->exec();
+            $template_content = $mod->print_content();
+            break;
 
         case 'commande':
             require_once('modules/mod_commandes/mod_commande.php');
@@ -86,6 +94,13 @@
         case 'inventaire_manuel':
             require_once ('modules/mod_inventaire_manuel/mod_inventaire_manuel.php');
             $mod = new Mod_inventaire_manuel();
+            $mod->exec();
+            $template_content = $mod->print_content();
+            break;
+
+        case 'bilan':
+            require_once ('modules/mod_bilan/mod_bilan.php');
+            $mod = new Mod_bilan();
             $mod->exec();
             $template_content = $mod->print_content();
             break;

@@ -19,12 +19,17 @@ class ModBuvettes {
         // mémorisation du bar sélectionné
         if (isset($_GET['bar_id'])) {
             $_SESSION['bar_id'] = intval($_GET['bar_id']);
+
         }
 
         switch ($action) {
 
             case 'choix':
                 $this->controleur->choix();
+                break;
+
+            case 'rejoindre_buvette':
+                header("Location: index.php?module=rejoindreBuvette&action=show_form");
                 break;
 
             case 'liste':
@@ -59,6 +64,10 @@ class ModBuvettes {
         }
 
         // menu affiché uniquement si un bar est sélectionné
+        //TODO: à débattre comme comportement
+        //TODO: revoir le comportement de changer de bar qui permet pas la demande de rejoindre
+        //TODO: le bandeau qui montre dans quel bar on est en haut à gauche
+        //TODO: notif à côté de l'inbox
         if (isset($_SESSION['bar_id'])) {
             $this->controleur->menu($_SESSION['login'], $_SESSION['bar_id']);
         }

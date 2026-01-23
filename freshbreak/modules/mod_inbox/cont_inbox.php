@@ -57,6 +57,15 @@ class Cont_inbox {
                 $this->vue->notification_type();
                 $this->vue->show_bar_creation_msg($message_content);
                 break;
+            case 3:
+                $this->vue->task_type();
+                $this->vue->show_gerant_adhesion_request($message_content);
+                break;
+            case 4:
+                $this->vue->notification_type();
+                $this->vue->show_adhesion_answer($message_content);
+                break;
+
         }
     }
 

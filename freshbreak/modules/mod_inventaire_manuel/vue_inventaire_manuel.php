@@ -21,7 +21,7 @@ class Vue_inventaire_manuel extends Vue_Generique {
                   </div>';
         }
         echo '    <button type="submit"> Valider l\'inventaire</button>
-                  <p>Il manque un produit ? <button type="submit" formaction="index.php?module=inventaire_manuel&action=save_tmp_inventory">Ajoutez-le</button></p>
+                  <p>Il manque un produit ? <br><button type="submit" formaction="index.php?module=inventaire_manuel&action=save_tmp_inventory">Ajoutez-le</button></p>
               </form>';
 
         echo '<p><a href="index.php?module=buvettes&action=liste"><button type="button">← Retour au menu</button></a></p>';

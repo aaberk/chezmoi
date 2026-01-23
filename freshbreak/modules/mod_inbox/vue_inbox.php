@@ -8,26 +8,39 @@ class Vue_inbox extends Vue_generique {
     }
 
     public function show_number_msg($nb_msg) {
-        echo "<p>Vous avez $nb_msg message(s).</p> ";
+        echo "<p>Vous avez " . htmlspecialchars($nb_msg) . " message(s).</p> ";
     }
 
     public function show_bar_creation_msg($request_info) {
         $request_arguments = explode("|",$request_info);
         if ($request_arguments[0] == '1') {
             $decision = 'accepté';
-            $explanation = 'Vous pourrez retrouver votre bar "'.$request_arguments[1].'" dans le menu déroulant de sélection.';
+            $explanation = 'Vous pourrez retrouver votre bar "' .
+                htmlspecialchars($request_arguments[1]) .
+                '" dans le menu déroulant de sélection.';
         }
         else {
             $decision = 'refusé';
             $explanation = 'Les fichiers fournis ne sont pas conforme à la réglementation. Refaites votre demande en les corrigeant ou adressez vous à notre support s\'il s\'agit d\'une erreur.';
         }
 
-        echo "<p>La demande de création pour votre buvette  a été $decision. $explanation</p>
+        echo "<p>La demande de création pour votre buvette  a été " .
+            htmlspecialchars($decision) .
+            ". $explanation</p>
             </div>";
     }
 
     public function show_admin_bar_creation_request($request_id) {
-        echo '<p>Vous avez une requête de création de bar à <a href="index.php?module=creationBuvettes&action=request_handling&request_id='.$request_id.'">traiter</a>.</p>
+        echo '<p>Vous avez une requête de création de bar à <a href="index.php?module=creationBuvettes&action=request_handling&request_id=' .
+            htmlspecialchars($request_id) .
+            '">traiter</a>.</p>
+            </div>';
+    }
+
+    public function show_gerant_adhesion_request($request_id) {
+        echo '<p>Vous avez une requête d adhesion a <a href="index.php?module=rejoindreBuvette&action=request_handling&request_id=' .
+            htmlspecialchars($request_id) .
+            '">traiter</a>.</p>
             </div>';
     }
 
@@ -56,6 +69,25 @@ class Vue_inbox extends Vue_generique {
         echo '<a href="index.php?module=inbox&action=delete_all_notif">Supprimer toutes les notifications</a>';
 
         echo '<br><br><p><a href="index.php?module=buvettes&action=liste"><button type="button">Retour au menu</button></a></p>';
+    }
+
+    public function show_adhesion_answer($request_info) {
+        $request_arguments = explode("|",$request_info);
+        if ($request_arguments[0] == '1') {
+            $decision = 'accepté';
+            $explanation = 'Vous pourrez retrouver le bar dans le menu déroulant de sélection.';
+        }
+        else {
+            $decision = 'refusé';
+            $explanation = 'Il semblerait que vous ne soyez pas adhérent de l\'association gérante du bar. Veuillez vous référer à son support s\'il s\'agit d\'une erreur';
+        }
+
+        echo "<p>La demande d'adhésion au bar " .
+            htmlspecialchars($request_arguments[1]) .
+            " a été " .
+            htmlspecialchars($decision) .
+            ". $explanation</p>
+            </div>";
     }
 }
 ?>

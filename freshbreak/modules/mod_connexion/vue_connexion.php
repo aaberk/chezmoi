@@ -21,8 +21,6 @@ class VueConnexion extends Vue_generique {
         </form>';
     }
 
-
-
     public function form_connexion() {
         echo '
         <h2>Connexion</h2>
@@ -45,13 +43,12 @@ class VueConnexion extends Vue_generique {
     }
 
     public function deja_connecte($login) {
-        echo "<p>Vous êtes déjà connecté sous l’identifiant <b>$login</b>.</p>";
+        echo "<p>Vous êtes déjà connecté sous l’identifiant <b>" . htmlspecialchars($login) . "</b>.</p>";
         echo '<a href="index.php?module=connexion&action=deconnexion">Se déconnecter</a>';
     }
 
     public function message($texte) {
-        echo "<p>$texte</p>";
+        echo "<p>" . htmlspecialchars($texte) . "</p>";
     }
 }
 ?>
-

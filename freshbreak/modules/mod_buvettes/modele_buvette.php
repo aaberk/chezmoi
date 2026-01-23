@@ -6,12 +6,52 @@ require_once('connexion.php');
 class ModeleBuvette extends connexion
 {
 
-    public function getListe(string $login)
-    {
+    public function getJoinedListeExcluCurrent(string $login, $id_bar) {
         $sql = '
         SELECT *
         FROM bar
         WHERE id_bar IN (
+            SELECT bar_associe
+            FROM role
+            WHERE login_utilisateur = :login
+        )
+        AND id_bar != :id_bar
+    ';
+
+        $stmt = self::$bdd->prepare($sql);
+        $stmt->bindValue(':login', $login);
+        $stmt->bindValue(':id_bar', $id_bar);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getJoinedListe(string $login) {
+        $sql = '
+        SELECT *
+        FROM bar
+        WHERE id_bar IN (
+            SELECT bar_associe
+            FROM role
+            WHERE login_utilisateur = :login
+        )
+    ';
+
+        $stmt = self::$bdd->prepare($sql);
+        $stmt->bindValue(':login', $login);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+
+
+    public function getNonJoinedListe(string $login)
+    {
+        $sql = '
+        SELECT *
+        FROM bar
+        WHERE id_bar NOT IN (
             SELECT bar_associe
             FROM role
             WHERE login_utilisateur = :login
@@ -54,6 +94,18 @@ class ModeleBuvette extends connexion
         return $stmt->fetchColumn();
     }
 
+    public function barRejoins($login, $id_bar) {
+        $sql = 'Select bar_associe from role where login_utilisateur = :login and bar_associe = :id_bar';
+        $stmt = self::$bdd->prepare($sql);
+        $stmt->bindValue(':login', $login);
+        $stmt->bindValue(':id_bar', $id_bar);
+        $stmt->execute();
+        if ( !$stmt->fetchColumn()) {
+            return $stmt->fetchColumn();
+        }
+        return true;
+    }
+
     public function getProduitsDisponibles($bar_id) {
         $sql = 'SELECT p.nom_produit, p.prix_vente
                 FROM produit p
@@ -66,5 +118,4 @@ class ModeleBuvette extends connexion
         $stmt->execute();
         return $stmt->fetchAll();
     }
-
 }
